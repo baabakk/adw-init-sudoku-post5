@@ -5,14 +5,18 @@
     "rootDir": "src",
     "strict": true,
     "module": "NodeNext",
-    "moduleResolution": "NodeNext"
+    "moduleResolution": "NodeNext",
+    "jsx": "react-jsx",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "target": "ES2022",
+    "lib": ["DOM", "DOM.Iterable", "ES2022"]
   },
   "references": [
     {
       "path": "../contracts"
     }
   ],
-  "include": [
-    "src"
-  ]
+  "include": ["src"]
 }
