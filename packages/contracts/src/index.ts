@@ -1,104 +1,124 @@
-/**
- * Shared contract types for the Sudoku platform.
- * All services and the web client import these types to ensure a single source of truth.
- * The file is compiled with `strict` enabled.
- */
+// Shared contract types for Sudoku platform
 
-/** Difficulty levels supported by the platform */
+/**
+ * Represents a single cell in a Sudoku board.
+ * `0` denotes an empty cell, while 1‑9 denote filled values.
+ */
+export type SudokuCell = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
+
+/**
+ * A row of a Sudoku board – exactly nine cells.
+ */
+export type SudokuRow = [
+  SudokuCell, SudokuCell, SudokuCell, SudokuCell, SudokuCell,
+  SudokuCell, SudokuCell, SudokuCell, SudokuCell
+];
+
+/**
+ * A complete 9×9 Sudoku board. The type guarantees nine rows each containing nine cells.
+ */
+export type Board = [
+  SudokuRow, SudokuRow, SudokuRow, SudokuRow, SudokuRow,
+  SudokuRow, SudokuRow, SudokuRow, SudokuRow
+];
+
+/**
+ * Difficulty levels supported by the puzzle generator and leaderboard.
+ */
 export enum Difficulty {
   Easy = "easy",
   Medium = "medium",
   Hard = "hard",
 }
 
-/** A single Sudoku cell value. `null` represents an empty cell. */
-export type Cell = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | null;
-
-/** A 9×9 Sudoku board. The outer array is rows, the inner array is columns. */
-export type Board = Cell[][];
-
-/** Represents a generated puzzle. It is essentially a board with some cells empty. */
+/**
+ * Core domain entity representing a generated puzzle.
+ */
 export interface Puzzle {
-  /** The board layout for the puzzle. */
   board: Board;
-  /** Difficulty of the puzzle. */
   difficulty: Difficulty;
 }
 
-/** Result of validating a completed board. */
-export enum ValidationStatus {
-  Valid = "valid",
-  Invalid = "invalid",
-  Incomplete = "incomplete",
-}
-
-/** Validation response payload. */
-export interface ValidateResponse {
-  /** Overall validation status. */
-  status: ValidationStatus;
-  /** Optional human‑readable messages describing validation errors. Present when status is Invalid. */
-  errors?: string[];
-}
-
-/** Score entry stored by the Scores service. */
+/**
+ * Core domain entity representing a player's score for a completed puzzle.
+ */
 export interface Score {
-  /** Player's display name. */
   playerName: string;
-  /** Difficulty of the puzzle that was solved. */
   difficulty: Difficulty;
-  /** Time taken to solve the puzzle, in milliseconds. */
+  /** Time to solve in milliseconds */
   timeMs: number;
-  /** When the score was recorded (ISO‑8601 string). */
-  recordedAt: string;
 }
 
-/** A single entry in the leaderboard response. */
+/**
+ * Entry returned in a leaderboard response. Extends `Score` with a rank.
+ */
 export interface LeaderboardEntry extends Score {
-  /** Rank of the entry (1‑based). */
+  /** 1‑based position in the leaderboard */
   rank: number;
 }
 
-/** Request payload for fetching a puzzle. Used as query parameters. */
+/**
+ * Request shape for fetching a new puzzle.
+ */
 export interface PuzzleRequest {
   difficulty: Difficulty;
 }
 
-/** Response payload for fetching a puzzle. */
+/**
+ * Response shape for a puzzle fetch request.
+ */
 export interface PuzzleResponse {
-  /** The generated puzzle board. */
   board: Board;
-  /** Difficulty of the returned puzzle. */
   difficulty: Difficulty;
 }
 
-/** Request payload for validating a board. */
+/**
+ * Request shape for validating a completed board.
+ */
 export interface ValidateRequest {
-  /** The board to validate. */
   board: Board;
 }
 
-/** Request payload for posting a completed game score. */
+/**
+ * Response shape for board validation.
+ */
+export interface ValidateResponse {
+  /** True when the board satisfies Sudoku rules */
+  valid: boolean;
+  /** Optional list of erroneous cell coordinates expressed as "row,col" (0‑based) */
+  errors?: string[];
+}
+
+/**
+ * Request shape for submitting a score.
+ */
 export interface ScoreRequest {
   playerName: string;
   difficulty: Difficulty;
+  /** Time to solve in milliseconds */
   timeMs: number;
 }
 
-/** Response payload after posting a score. */
+/**
+ * Response shape after posting a score.
+ */
 export interface ScoreResponse {
-  /** Indicates whether the score was accepted. */
+  /** Indicates whether the score was accepted */
   success: boolean;
-  /** Optional message providing additional information. */
-  message?: string;
+  /** Rank of the submitted score within the leaderboard, if it qualifies */
+  rank?: number;
 }
 
-/** Request payload for fetching the leaderboard. Used as query parameters. */
+/**
+ * Request shape for retrieving a leaderboard.
+ */
 export interface LeaderboardRequest {
   difficulty: Difficulty;
 }
 
-/** Response payload containing the top‑10 leaderboard entries for a difficulty. */
+/**
+ * Response shape containing the top‑10 leaderboard entries for a difficulty.
+ */
 export interface LeaderboardResponse {
-  /** Ordered list of leaderboard entries (best time first). */
   entries: LeaderboardEntry[];
 }
