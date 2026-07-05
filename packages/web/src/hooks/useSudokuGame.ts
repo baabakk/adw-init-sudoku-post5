@@ -19,9 +19,11 @@ export function useSudokuGame(initialDifficulty: Difficulty = Difficulty.Easy) {
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Start / stop timer based on board existence
+  // Start / stop timer based on board existence (ignore initial empty array)
   useEffect(() => {
-    if (state.board.length === 0) return;
+    // Cast to any to avoid literal length type issue (Board length is 9)
+    const boardLength = (state.board as any).length as number;
+    if (!boardLength) return;
     timerRef.current = setInterval(() => {
       setState((prev) => ({ ...prev, elapsedMs: prev.elapsedMs + 1000 }));
     }, 1000);

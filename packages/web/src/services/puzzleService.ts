@@ -1,8 +1,15 @@
 import axios from 'axios';
-import type { PuzzleRequest, PuzzleResponse, ValidateRequest, ValidateResponse, Difficulty } from '@init-sudoku-post5/contracts';
+import type {
+  PuzzleRequest,
+  PuzzleResponse,
+  ValidateRequest,
+  ValidateResponse,
+  Difficulty,
+} from '@init-sudoku-post5/contracts';
 
-// Base URL for the Puzzle Service – in a real app this would be configurable.
-const BASE_URL = import.meta.env.VITE_PUZZLE_SERVICE_URL || '';
+// Base URL for the Puzzle Service – in a real app this would be configurable via environment variables.
+// For simplicity and to avoid TypeScript errors with import.meta in CommonJS builds, we default to an empty string.
+const BASE_URL = process.env.VITE_PUZZLE_SERVICE_URL || '';
 
 /** Fetch a new puzzle of the given difficulty. */
 export async function fetchPuzzle(difficulty: Difficulty): Promise<PuzzleResponse> {
