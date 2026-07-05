@@ -1,0 +1,1 @@
+export * from '@init-sudoku-post5/contracts';
