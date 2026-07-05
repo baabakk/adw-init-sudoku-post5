@@ -1,0 +1,5 @@
+// web-client — Web Client
+// Scope: Browser SPA that renders an interactive 9x9 Sudoku board, allows difficulty selection, fetches puzzles from Puzzle Service, submits completed boards for validation, and displays results and leaderboard from Scores Service.
+// Owns: packages/web
+// This team builds its slice here each phase.
+export {};
